@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 4 - System Authentication</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .wrapper {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 900px;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 40px 30px;
+            width: 380px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        .input-group {
+            margin-bottom: 18px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus {
+            border-color: #3498db;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .alert-box {
+            background: #ffebee;
+            color: #d32f2f;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            border: 1px solid #ffcdd2;
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Login Card -->
+        <div class="card">
+            <h2>Account Login</h2>
+            <div id="login-error" class="alert-box"></div>
+            <form id="login-form">
+                <div class="input-group">
+                    <input type="text" id="login-email" placeholder="Email Address">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="login-password" placeholder="Password">
+                </div>
+                <button type="submit">Sign In</button>
+            </form>
+        </div>
+
+        <!-- Registration Card -->
+        <div class="card">
+            <h2>Create Account</h2>
+            <div id="reg-error" class="alert-box"></div>
+            <form id="register-form">
+                <div class="input-group">
+                    <input type="text" id="reg-name" placeholder="Full Name">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="reg-email" placeholder="Email Address">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="reg-password" placeholder="Password">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="reg-confirm" placeholder="Confirm Password">
+                </div>
+                <button type="submit" style="background: #2ecc71;">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        function showError(elementId, message) {
+            const errorDiv = document.getElementById(elementId);
+            errorDiv.innerText = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideErrors() {
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('reg-error').style.display = 'none';
+        }
+
+        // Login Logic
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            hideErrors();
+
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!email) return showError('login-error', "Email field cannot be empty.");
+            if (!password) return showError('login-error', "Password field cannot be empty.");
+
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('password', password);
+
+            fetch('/login', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.href = '/welcome';
+                    } else {
+                        showError('login-error', data.message);
+                    }
+                });
+        });
+
+        // Registration Logic
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            hideErrors();
+
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+
+            if (!name) return showError('reg-error', "Name field cannot be empty.");
+            if (!email) return showError('reg-error', "Email field cannot be empty.");
+            if (!password) return showError('reg-error', "Password field cannot be empty.");
+            if (!confirm) return showError('reg-error', "Confirm Password field cannot be empty.");
+
+            if (!emailRegex.test(email)) return showError('reg-error', "Please enter a valid email address.");
+            if (password !== confirm) return showError('reg-error', "Passwords do not match.");
+
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('password', password);
+
+            fetch('/register', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.href = '/welcome';
+                    } else {
+                        showError('reg-error', data.message);
+                    }
+                });
+        });
+    </script>
+</body>
+</html>
