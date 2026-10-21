@@ -3,93 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lab 4 - System Authentication</title>
+    <title>Lab 4 - Auth Portal</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
         * {
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
+
         body {
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            margin: 0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0;
-            padding: 20px;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
         }
-        .wrapper {
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 400px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        .tab-container {
             display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
-            justify-content: center;
-            width: 100%;
-            max-width: 900px;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
         }
-        .card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            padding: 40px 30px;
-            width: 380px;
-        }
-        h2 {
-            text-align: center;
-            color: #2c3e50;
-            margin-top: 0;
-            margin-bottom: 25px;
+
+        .tab {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 18px;
             font-weight: 600;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 50%;
         }
+
+        .tab.active {
+            color: #00f2fe;
+            border-bottom: 2px solid #00f2fe;
+        }
+
+        .tab:hover {
+            color: #fff;
+        }
+
+        .form-section {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .input-group {
-            margin-bottom: 18px;
+            margin-bottom: 25px;
+            position: relative;
         }
+
         .input-group input {
             width: 100%;
-            padding: 14px;
-            border: 1.5px solid #e0e0e0;
-            border-radius: 8px;
-            outline: none;
-            font-size: 15px;
-            transition: border-color 0.3s;
-        }
-        .input-group input:focus {
-            border-color: #3498db;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: #3498db;
-            color: white;
+            padding: 10px 0;
+            background: transparent;
             border: none;
-            border-radius: 8px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
             font-size: 16px;
-            font-weight: bold;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .input-group input:focus {
+            border-bottom-color: #00f2fe;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: transform 0.2s, box-shadow 0.2s;
             margin-top: 10px;
         }
-        button:hover {
-            background: #2980b9;
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4);
         }
+
         .alert-box {
-            background: #ffebee;
-            color: #d32f2f;
+            background: rgba(255, 75, 75, 0.1);
+            color: #ff4b4b;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 14px;
-            font-weight: 500;
             text-align: center;
-            border: 1px solid #ffcdd2;
-            display: none; /* Hidden by default */
+            border: 1px solid rgba(255, 75, 75, 0.3);
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <!-- Login Card -->
-        <div class="card">
-            <h2>Account Login</h2>
+
+    <div class="glass-card">
+        <!-- Tabs -->
+        <div class="tab-container">
+            <button class="tab active" onclick="switchTab('login')">Sign In</button>
+            <button class="tab" onclick="switchTab('register')">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="login-section" class="form-section active">
             <div id="login-error" class="alert-box"></div>
             <form id="login-form">
                 <div class="input-group">
@@ -98,13 +150,12 @@
                 <div class="input-group">
                     <input type="password" id="login-password" placeholder="Password">
                 </div>
-                <button type="submit">Sign In</button>
+                <button type="submit" class="submit-btn">Login</button>
             </form>
         </div>
 
-        <!-- Registration Card -->
-        <div class="card">
-            <h2>Create Account</h2>
+        <!-- Registration Form -->
+        <div id="register-section" class="form-section">
             <div id="reg-error" class="alert-box"></div>
             <form id="register-form">
                 <div class="input-group">
@@ -119,7 +170,7 @@
                 <div class="input-group">
                     <input type="password" id="reg-confirm" placeholder="Confirm Password">
                 </div>
-                <button type="submit" style="background: #2ecc71;">Register</button>
+                <button type="submit" class="submit-btn">Create Account</button>
             </form>
         </div>
     </div>
@@ -127,6 +178,22 @@
     <script>
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+        // UI Logic for Tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.form-section').forEach(f => f.classList.remove('active'));
+            hideErrors();
+
+            if(tabName === 'login') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('login-section').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('register-section').classList.add('active');
+            }
+        }
+
+        // Validation & Error Display
         function showError(elementId, message) {
             const errorDiv = document.getElementById(elementId);
             errorDiv.innerText = message;
@@ -138,7 +205,7 @@
             document.getElementById('reg-error').style.display = 'none';
         }
 
-        // Login Logic
+        // Login Submission
         document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
             hideErrors();
@@ -146,8 +213,8 @@
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
 
-            if (!email) return showError('login-error', "Email field cannot be empty.");
-            if (!password) return showError('login-error', "Password field cannot be empty.");
+            if (!email) return showError('login-error', "Email field is empty");
+            if (!password) return showError('login-error', "Password field is empty");
 
             const formData = new FormData();
             formData.append('email', email);
@@ -156,15 +223,12 @@
             fetch('/login', { method: 'POST', body: formData })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.status === 'success') {
-                        window.location.href = '/welcome';
-                    } else {
-                        showError('login-error', data.message);
-                    }
+                    if (data.status === 'success') window.location.href = '/welcome';
+                    else showError('login-error', data.message);
                 });
         });
 
-        // Registration Logic
+        // Registration Submission
         document.getElementById('register-form').addEventListener('submit', function(e) {
             e.preventDefault();
             hideErrors();
@@ -174,13 +238,13 @@
             const password = document.getElementById('reg-password').value;
             const confirm = document.getElementById('reg-confirm').value;
 
-            if (!name) return showError('reg-error', "Name field cannot be empty.");
-            if (!email) return showError('reg-error', "Email field cannot be empty.");
-            if (!password) return showError('reg-error', "Password field cannot be empty.");
-            if (!confirm) return showError('reg-error', "Confirm Password field cannot be empty.");
+            if (!name) return showError('reg-error', "Name field is empty");
+            if (!email) return showError('reg-error', "Email field is empty");
+            if (!password) return showError('reg-error', "Password field is empty");
+            if (!confirm) return showError('reg-error', "Confirm password field is empty");
 
-            if (!emailRegex.test(email)) return showError('reg-error', "Please enter a valid email address.");
-            if (password !== confirm) return showError('reg-error', "Passwords do not match.");
+            if (!emailRegex.test(email)) return showError('reg-error', "Email has an invalid format");
+            if (password !== confirm) return showError('reg-error', "Password and confirm password must be the same");
 
             const formData = new FormData();
             formData.append('name', name);
@@ -190,11 +254,8 @@
             fetch('/register', { method: 'POST', body: formData })
                 .then(res => res.json())
                 .then(data => {
-                    if (data.status === 'success') {
-                        window.location.href = '/welcome';
-                    } else {
-                        showError('reg-error', data.message);
-                    }
+                    if (data.status === 'success') window.location.href = '/welcome';
+                    else showError('reg-error', data.message);
                 });
         });
     </script>
