@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 4 - Auth</title>
+    <style>
+        /* Bonus: Using CSS to format the forms */
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .container { display: flex; gap: 40px; justify-content: center; margin-top: 50px; }
+        .form-box { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
+        input { display: block; width: 90%; margin: 10px 0; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: #28a745; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; border-radius: 4px; }
+        button:hover { background: #218838; }
+        .error { color: red; font-size: 0.9em; margin-bottom: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div class="form-box">
+            <h2>Login</h2>
+            <div id="login-error" class="error"></div>
+            <form id="login-form">
+                <input type="text" id="login-email" placeholder="Email">
+                <input type="password" id="login-password" placeholder="Password">
+                <button type="submit">Login</button>
+            </form>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="form-box">
+            <h2>Register</h2>
+            <div id="reg-error" class="error"></div>
+            <form id="register-form">
+                <input type="text" id="reg-name" placeholder="Name">
+                <input type="text" id="reg-email" placeholder="Email">
+                <input type="password" id="reg-password" placeholder="Password">
+                <input type="password" id="reg-confirm" placeholder="Confirm Password">
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Validation for Email Format (Bonus)
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Login Logic
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const errorDiv = document.getElementById('login-error');
+            errorDiv.style.display = 'none';
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // JS Validation: Ensure not empty
+            if (!email) return showError(errorDiv, "Email field is empty");
+            if (!password) return showError(errorDiv, "Password field is empty");
+
+            // Bonus: Ajax Submission
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('password', password);
+
+            fetch('/login', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') window.location.href = '/welcome';
+                    else showError(errorDiv, data.message);
+                });
+        });
+
+        // Registration Logic
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const errorDiv = document.getElementById('reg-error');
+            errorDiv.style.display = 'none';
+
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+
+            // JS Validation: Display which field is empty
+            if (!name) return showError(errorDiv, "Name field is empty");
+            if (!email) return showError(errorDiv, "Email field is empty");
+            if (!password) return showError(errorDiv, "Password field is empty");
+            if (!confirm) return showError(errorDiv, "Confirm password field is empty");
+
+            // JS Validation: Email valid format
+            if (!emailRegex.test(email)) return showError(errorDiv, "Email has an invalid format");
+
+            // JS Validation: Password match
+            if (password !== confirm) return showError(errorDiv, "Password and confirm password must be the same");
+
+            // Bonus: Ajax Submission
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('email', email);
+            formData.append('password', password);
+
+            fetch('/register', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') window.location.href = '/welcome';
+                    else showError(errorDiv, data.message);
+                });
+        });
+
+        function showError(div, msg) {
+            div.innerText = msg;
+            div.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
