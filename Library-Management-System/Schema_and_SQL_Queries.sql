@@ -263,21 +263,21 @@ INSERT INTO `borrowing_book` (`member_id`, `book_id`,`borrow_date`, `due_date`, 
 -- Query 1
 SELECT name
 FROM MEMBER
-WHERE join_date > '2000-09-01'
+WHERE join_date > '2000-09-01';
 
 -- Query 2
 SELECT name, pub_id
-FROM PUBLISHER
+FROM PUBLISHER;
 
 -- Query 3
 SELECT member_id, name, address, join_date
 FROM MEMBER
-WHERE join_date >= '1995-10-01' and join_date <= '2019-10-01'
+WHERE join_date >= '1995-10-01' and join_date <= '2019-10-01';
 
 -- Query 4
 SELECT book_id, title, price, pub_id, category_id
 FROM BOOK
-WHERE pub_id = '2' or price >= 15 and price <= 20
+WHERE pub_id = '2' or price >= 15 and price <= 20;
 
 -- Query 5
 SELECT member_id, book_id, borrow_date, due_date, return_date
