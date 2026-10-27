@@ -259,3 +259,17 @@ INSERT INTO `borrowing_book` (`member_id`, `book_id`,`borrow_date`, `due_date`, 
 (50, 20, '1979-03-20 19:33:11', '1979-03-27 19:33:11', '1979-03-26 02:34:02');
 
 -- SQL queries
+
+-- Query 1
+SELECT name
+FROM MEMBER
+WHERE join_date > '2000-09-01'
+
+-- Query 2
+SELECT name, pub_id
+FROM PUBLISHER
+
+-- Query 3
+SELECT
+FROM
+WHERE
