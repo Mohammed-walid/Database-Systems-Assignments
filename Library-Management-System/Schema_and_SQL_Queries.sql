@@ -1,4 +1,6 @@
---schema
+CREATE DATABASE IF NOT EXISTS `Library Management System`;
+USE `Library Management System`;
+-- schema
 create table CATEGORY(
 category_id int not null auto_increment,
 name varchar(250) not null,
@@ -42,7 +44,7 @@ FOREIGN KEY(member_id) references MEMBER(member_id),
 FOREIGN KEY(book_id) references BOOK(book_id)
 );
 
---data
+-- sample data
 INSERT INTO category(name) values ("Science Fiction");
 INSERT INTO category(name) values ("Educational");
 INSERT INTO category(name) values ("Drama");
@@ -256,4 +258,4 @@ INSERT INTO `borrowing_book` (`member_id`, `book_id`,`borrow_date`, `due_date`, 
 (50, 10, '2003-01-02 14:01:13', '2003-02-01 14:01:13', '2003-01-16 22:31:36'),
 (50, 20, '1979-03-20 19:33:11', '1979-03-27 19:33:11', '1979-03-26 02:34:02');
 
---SQL queries
+-- SQL queries
