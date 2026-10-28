@@ -277,7 +277,7 @@ WHERE join_date >= '1995-10-01' and join_date <= '2019-10-01';
 -- Query 4
 SELECT book_id, title, price, pub_id, category_id
 FROM BOOK
-WHERE pub_id = '2' or price >= 15 and price <= 20;
+WHERE (pub_id = 2 OR price >= 15) AND price <= 20
 
 -- Query 5
 SELECT member_id, book_id, borrow_date, due_date, return_date
