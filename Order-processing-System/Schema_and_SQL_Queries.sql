@@ -9,14 +9,6 @@ city varchar(250) not null,
 PRIMARY KEY(customer_id)
 );
 
-create table order_item(
-order_id int not null,
-item_id int not null,
-quantity int not null,
-FOREIGN KEY(item_id) references item(item_id),
-FOREIGN KEY(order_id) references order(order_id)
-);
-
 create table item(
 item_id int not null,
 unit_price float not null,
@@ -25,16 +17,16 @@ PRIMARY KEY(item_id)
 
 create table warehouse(
 warehouse_id int not null,
-warehouse_city int not null,
-PRIMARY KEY(warehouse_id),
+warehouse_city varchar(250) not null,
+PRIMARY KEY(warehouse_id)
 );
 
 create table shipment(
 order_id int not null,
 warehouse_id int not null,
 ship_date datetime not null,
-FOREIGN KEY(warehouse_id_id) references warehouse(warehouse_id),
-FOREIGN KEY(order_id) references order(order_id)
+FOREIGN KEY(warehouse_id) references warehouse(warehouse_id),
+FOREIGN KEY(order_id) references `order`(order_id)
 );
 
 create table `order`(
@@ -43,6 +35,14 @@ order_date datetime not null,
 customer_id int not null,
 PRIMARY KEY(order_id),
 FOREIGN KEY(customer_id) references customer(customer_id)
+);
+
+create table order_item(
+order_id int not null,
+item_id int not null,
+quantity int not null,
+FOREIGN KEY(item_id) references item(item_id),
+FOREIGN KEY(order_id) references `order`(order_id)
 );
 
 -- sample data
