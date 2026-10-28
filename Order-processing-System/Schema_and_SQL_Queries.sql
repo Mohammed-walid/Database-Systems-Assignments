@@ -1128,4 +1128,16 @@ INSERT INTO `warehouse` (`warehouse_id`, `warehouse_city`) VALUES
 (59, 'Whitby'),
 (60, 'Shipshaw');
 
+-- SQL Queries
+
+-- Write an SQL query to retrieve names of customers whose name starts with‘Ma’.
+
+
+-- Write an SQL query to retrieve count of items and total price of each order.
+
+
+-- Write an SQL query to retrieve order number for each order that had been shipped from warehouse in ‘Arica’.
+
+
+-- Write an SQL query to retrieve total price of orders that had been shipped from warehouse #8.
 
