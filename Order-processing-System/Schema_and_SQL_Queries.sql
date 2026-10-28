@@ -1,5 +1,5 @@
 CREATE DATABASE IF NOT EXISTS `Order processing System`;
-USE `Library Management System`;
+USE `Order processing System`;
 -- schema
 
 create table customer(
