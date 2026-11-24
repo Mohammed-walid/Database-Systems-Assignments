@@ -1132,12 +1132,24 @@ INSERT INTO `warehouse` (`warehouse_id`, `warehouse_city`) VALUES
 
 -- Write an SQL query to retrieve names of customers whose name starts with‘Ma’.
 
+select customer_name
+from customer
+where customer_name like 'Ma%'
 
 -- Write an SQL query to retrieve count of items and total price of each order.
 
+select
+from
+where
 
 -- Write an SQL query to retrieve order number for each order that had been shipped from warehouse in ‘Arica’.
 
+select
+from
+where
 
 -- Write an SQL query to retrieve total price of orders that had been shipped from warehouse #8.
 
+select
+from
+where
