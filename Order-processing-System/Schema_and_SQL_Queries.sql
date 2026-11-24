@@ -1134,22 +1134,29 @@ INSERT INTO `warehouse` (`warehouse_id`, `warehouse_city`) VALUES
 
 select customer_name
 from customer
-where customer_name like 'Ma%'
+where customer_name like 'Ma%';
 
 -- Write an SQL query to retrieve count of items and total price of each order.
 
-select
-from
-where
+select order_id, count(item_id) as item_count,
+       sum(quantity * unit_price) as total_price
+from order_item
+join item on order_item.item_id = item.item_id
+group by order_id;
 
 -- Write an SQL query to retrieve order number for each order that had been shipped from warehouse in ‘Arica’.
 
-select
-from
-where
+select shipment.order_id
+from shipment
+join warehouse on shipment.warehouse_id = warehouse.warehouse_id
+WHERE warehouse_city = 'Arica';
 
 -- Write an SQL query to retrieve total price of orders that had been shipped from warehouse #8.
 
-select
-from
-where
+select sum(quantity * unit_price) as total_price
+from order_item
+join item on order_item.item_id = item.item_id
+WHERE order_id in (
+    select order_id
+    from shipment
+    WHERE warehouse_id = 8);
